@@ -4,7 +4,7 @@ describe("getFormattedDate", () => {
   it("should return a formatted date string", () => {
     const date = new Date("2022-01-01");
 
-    expect(getFormattedDate(date)).toEqual("2022-1-1");
+    expect(getFormattedDate(date)).toEqual("2022-01-01");
   });
 });
 
