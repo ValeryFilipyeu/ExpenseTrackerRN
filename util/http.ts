@@ -1,11 +1,10 @@
 import axios from "axios";
 import { Expense } from "../types";
-
-const BACKEND_URL = "https://react-native-a697c-default-rtdb.firebaseio.com";
+import { BASE_BACKEND_URL } from "@env";
 
 export async function storeExpense(expenseData: Expense) {
   const response = await axios.post(
-    BACKEND_URL + "/expenses.json",
+    BASE_BACKEND_URL + "/expenses.json",
     expenseData
   );
 
@@ -13,7 +12,7 @@ export async function storeExpense(expenseData: Expense) {
 }
 
 export async function fetchExpenses() {
-  const response = await axios.get(BACKEND_URL + "/expenses.json");
+  const response = await axios.get(BASE_BACKEND_URL + "/expenses.json");
 
   const expenses = [];
 
@@ -31,9 +30,9 @@ export async function fetchExpenses() {
 }
 
 export function updateExpense(id: string, expenseData: Expense) {
-  return axios.put(BACKEND_URL + `/expenses/${id}.json`, expenseData);
+  return axios.put(BASE_BACKEND_URL + `/expenses/${id}.json`, expenseData);
 }
 
 export function deleteExpense(id: string) {
-  return axios.delete(BACKEND_URL + `/expenses/${id}.json`);
+  return axios.delete(BASE_BACKEND_URL + `/expenses/${id}.json`);
 }
