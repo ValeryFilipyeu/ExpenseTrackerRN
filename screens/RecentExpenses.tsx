@@ -1,11 +1,32 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 
 import ExpensesOutput from "../components/ExpensesOutput/ExpensesOutput";
+import ErrorOverlay from '../components/UI/ErrorOverlay';
+import LoadingOverlay from '../components/UI/LoadingOverlay';
 import { ExpensesContext } from "../store/expenses-context";
 import { getDateMinusDays } from "../util/date";
+import { fetchExpenses } from '../util/http';
 
 const RecentExpenses: React.FC<unknown> = () => {
+  const [isFetching, setIsFetching] = useState(true);
+  const [error, setError] = useState<string | undefined>(undefined);
+
   const expensesCtx = useContext(ExpensesContext);
+
+  useEffect(() => {
+    async function getExpenses() {
+      setIsFetching(true);
+      try {
+        const expenses = await fetchExpenses();
+        expensesCtx.setExpenses(expenses);
+      } catch (error) {
+        setError('Could not fetch expenses!');
+      }
+      setIsFetching(false);
+    }
+
+    getExpenses().catch(() => {});
+  }, []);
 
   const recentExpenses = expensesCtx.expenses.filter((expense) => {
     const today = new Date();
@@ -13,6 +34,15 @@ const RecentExpenses: React.FC<unknown> = () => {
 
     return expense.date >= date7DaysAgo && expense.date <= today;
   });
+
+  if (error && !isFetching) {
+    return <ErrorOverlay message={error} />;
+  }
+
+  if (isFetching) {
+    return <LoadingOverlay />;
+  }
+
 
   return (
     <ExpensesOutput
